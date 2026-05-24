@@ -1,5 +1,5 @@
 {
-  "name": "@tntholley/openclaw-reliability-engine",
+  "name": "@laninthalesdran/openclaw-reliability-engine",
   "version": "0.1.0",
   "description": "Reliability scoring for OpenClaw agents — scores claims by evidence and persuasion technique, not by the politics of the source. Explainable, non-partisan, auditable.",
   "type": "module",
