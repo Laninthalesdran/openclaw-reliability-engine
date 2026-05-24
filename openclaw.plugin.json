@@ -3,7 +3,7 @@
   "name": "Reliability Engine",
   "description": "Scores how much a claim should move your beliefs — by evidence and persuasion technique, not by the politics of the source. Explainable, non-partisan, auditable. No censor in the basement.",
   "contracts": {
-    "tools": ["reliability_score_claim", "reliability_check_source", "reliability_scan_language"]
+    "tools": ["reliability_score_claim", "reliability_check_source", "reliability_scan_language", "reliability_rate_bias"]
   },
   "activation": {
     "onStartup": true
@@ -15,6 +15,7 @@
   "toolMetadata": {
     "reliability_score_claim": { "optional": false },
     "reliability_check_source": { "optional": true },
-    "reliability_scan_language": { "optional": true }
+    "reliability_scan_language": { "optional": true },
+    "reliability_rate_bias": { "optional": true }
   }
 }

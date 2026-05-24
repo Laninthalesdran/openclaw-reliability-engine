@@ -6,7 +6,7 @@ description: >
   move your conclusions, or judging whether a source is reliable or self-declared satire.
   Triggers on "is this true / reliable / trustworthy", "check this source", "is this biased",
   "fact-check", "how confident should I be in this claim".
-tools: [reliability_score_claim, reliability_check_source, reliability_scan_language]
+tools: [reliability_score_claim, reliability_check_source, reliability_scan_language, reliability_rate_bias]
 ---
 
 # Reliability check
@@ -31,6 +31,11 @@ and it explains every score.
 - **Suspect spin?** → `reliability_scan_language` with the `text`. Returns a 0–1 manipulation
   score and the techniques present (loaded language, fear appeal, weasel attribution, us-vs-them,
   absolutes, clickbait…).
+
+- **Measuring how slanted a source is?** → `reliability_rate_bias` with a `source_id` and a
+  `claim_texts` batch of its headlines/claims. Returns a 0–1 **structural** bias magnitude from
+  persuasion-technique density — symmetric (counts technique, not side) and kept SEPARATE from
+  validity. Report the slant; never treat a lean as a factual error.
 
 ## How to read the results honestly
 

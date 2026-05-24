@@ -71,5 +71,22 @@ export default definePluginEntry({
                 return text(engine.scanLanguage(params.text));
             },
         });
+        // 4) Rate a source's structural bias from a batch of its own claims/headlines
+        api.registerTool({
+            name: "reliability_rate_bias",
+            description: "Rate a source's STRUCTURAL bias magnitude (0-1) from a batch of its own claims/headlines, " +
+                "measured by persuasion-technique density — symmetric (it counts technique, not which side the " +
+                "technique serves) and kept SEPARATE from validity (it never changes the source's accuracy score). " +
+                "A source can be accurate AND slanted; this measures the slant, not whether it's wrong. " +
+                "Returns the bias magnitude + method. Unknown source ids are created in memory.",
+            parameters: Type.Object({
+                source_id: Type.String({ description: "Source id to rate (created in memory if unknown)." }),
+                claim_texts: Type.Array(Type.String(), { description: "A batch of the source's claims/headlines; magnitude is the mean persuasion-technique density across them." }),
+            }),
+            async execute(_id, params) {
+                const r = engine.rateBias(params.source_id, params.claim_texts);
+                return text(r ?? { error: "Provide at least one claim_text to rate." });
+            },
+        });
     },
 });

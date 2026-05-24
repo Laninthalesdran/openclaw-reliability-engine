@@ -130,8 +130,9 @@ export class ReliabilityEngine {
    *  a hand-assigned left/right lean. It NEVER touches validity (accuracy and bias are
    *  separate axes — a source can be accurate AND slanted). */
   rateBias(sourceId: string, claimTexts: string[]) {
-    const s = this.sources[sourceId];
-    if (!s || claimTexts.length === 0) return null;
+    if (claimTexts.length === 0) return null;
+    let s = this.sources[sourceId];
+    if (!s) { s = defaultSource(sourceId); this.sources[sourceId] = s; }
     const scores = claimTexts.map((t) => rhetoric.analyze(t).score);
     const mag = scores.reduce((a, b) => a + b, 0) / scores.length;
     s.bias.magnitude = Math.round(mag * 1000) / 1000;

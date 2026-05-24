@@ -30,13 +30,14 @@ A conspiracy claim that can't be falsified                               -> 2.0 
         !! VETO: unfalsifiable (reputation cannot rescue this)
 ```
 
-## What it does (3 tools)
+## What it does (4 tools)
 
 | Tool | What it answers |
 |---|---|
 | `reliability_score_claim` | How much should this claim move my beliefs? (0–10 + breakdown) |
 | `reliability_check_source` | What's this source's validity / bias / salience / non-factual status? |
 | `reliability_scan_language` | What persuasion techniques is this text using? (0–1 + techniques) |
+| `reliability_rate_bias` | How slanted is this source? Rate its structural bias (0–1) from a batch of its claims — symmetric, kept separate from validity |
 
 ## How it scores (no magic, all auditable)
 
@@ -50,6 +51,8 @@ A conspiracy claim that can't be falsified                               -> 2.0 
 
 **State-media control graph:** outlets sharing a controlling/funding entity (e.g. RT + Sputnik + TASS = Russian state) **collapse to one corroborator** so coordinated state outlets can't fake independent confirmation; state control raises the incentive-conflict floor and attaches an honest, **control-type-scaled** flag (a direct state instrument is framed differently from a publicly-funded independent broadcaster like the BBC). Applied symmetrically across all governments — it's a documented funding/control fact, not a political judgment. See `data/state_media_registry.jsonl`.
 
+**Bias rating — structural, symmetric, firewalled from validity:** every source carries a `bias` (direction + magnitude) that the engine **never** lets bleed into `validity` — a source can be accurate *and* slanted, and the two are always reported separately. Magnitude is measured from **persuasion-technique density** (the same symmetric leading-language detector), so it counts *technique*, not which side it serves; direction can be fed by the Coverage Engine's **measured** selection/omission asymmetry, never assigned by hand. `reliability_check_source` returns it. Honest caveat: because magnitude rides on the leading-language detector, a calm-but-slanted source can read low — see `KNOWN_LIMITATIONS.md` §3.
+
 ## Install
 
 ```bash
@@ -59,7 +62,9 @@ openclaw plugins install clawhub:tntholley/reliability-engine
 ## Verify it locally (no build needed; Node 24+ runs TypeScript directly)
 
 ```bash
-node test/demo.ts      # reproduces every number above — 11/11 checks
+node test/demo.ts      # reproduces every number above — 20/20 checks
+                       # (claim-scoring, anti-laundering, leading-language, satire,
+                       #  calibration, state-media, and bias rating)
 ```
 
 ## Layout
@@ -68,9 +73,10 @@ node test/demo.ts      # reproduces every number above — 11/11 checks
 index.ts                 OpenClaw plugin entry (registers the 3 tools)
 openclaw.plugin.json      plugin manifest
 src/                      the engine (zero OpenClaw deps — reusable, testable)
-  engine.ts  claimScorer.ts  rhetoric.ts  trustGraph.ts  calibrate.ts  registry.ts  types.ts
+  engine.ts  claimScorer.ts  rhetoric.ts  trustGraph.ts  stateMedia.ts  calibrate.ts  registry.ts  types.ts
 data/                     the knowledge: leading-language lexicon (cited), self-declared-
-                          non-factual registry (71 outlets) + patterns, seed source memory
+                          non-factual registry (71 outlets) + patterns, state-media control
+                          graph, seed source memory
 test/demo.ts              verification harness
 ```
 
