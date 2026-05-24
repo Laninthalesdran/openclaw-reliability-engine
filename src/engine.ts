@@ -2,7 +2,7 @@
 // rhetoric + registry + calibration together. Zero OpenClaw deps (so it's testable
 // and reusable); the plugin entry (index.ts) is the only file that imports the SDK.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -17,8 +17,23 @@ import { applyToSources, matchesSelfDeclaration } from "./registry.ts";
 import type { RegistryEntry } from "./registry.ts";
 import { calibrate } from "./calibrate.ts";
 
+// Walk up from this module to find the data/ folder. Works whether running from
+// source (src/engine.ts) or compiled output (dist/src/engine.js) — the data/ dir
+// lives at the package root in both cases.
+function findDataDir(start: string): string {
+  let dir = start;
+  for (let i = 0; i < 6; i++) {
+    const candidate = join(dir, "data");
+    if (existsSync(join(candidate, "leading_language.json"))) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return join(start, "..", "data");
+}
+
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DEFAULT_DATA = join(HERE, "..", "data");
+const DEFAULT_DATA = findDataDir(HERE);
 
 function readJsonl(path: string): any[] {
   return readFileSync(path, "utf-8").split("\n")

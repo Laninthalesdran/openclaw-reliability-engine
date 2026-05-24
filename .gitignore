@@ -1,7 +1,6 @@
 # dependencies
 node_modules/
-# build output
-dist/
+# build output (dist/ IS shipped — ClawHub requires compiled JS)
 build/
 *.tsbuildinfo
 # logs / debug
