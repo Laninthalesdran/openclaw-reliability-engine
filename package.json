@@ -7,7 +7,7 @@
   "author": "Travis Edward Holley (TNT Holley Inc.)",
   "contributors": ["Claude Opus 4.7 (1M context, Anthropic)"],
   "keywords": ["openclaw", "openclaw-plugin", "reliability", "fact-checking", "misinformation", "media-literacy", "propaganda-detection", "bias"],
-  "files": ["index.ts", "openclaw.plugin.json", "src/", "data/", "README.md", "SKILL.md", "NOTICE"],
+  "files": ["index.ts", "openclaw.plugin.json", "src/", "data/", "README.md", "SKILL.md", "NOTICE", "LICENSE"],
   "scripts": {
     "test": "node test/demo.ts",
     "typecheck": "tsc --noEmit"
