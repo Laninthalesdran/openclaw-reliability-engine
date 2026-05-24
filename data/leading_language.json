@@ -1,0 +1,117 @@
+{
+  "_about": "Leading / biased-language detector. Lowers a claim's reliability when it substitutes persuasion technique for evidence. Grounded in real marketing/psychology/sociology research (citations per category). PRINCIPLE: detect the TECHNIQUE, not the political position — the us_vs_them list is deliberately symmetric (left- and right-coded pejoratives both included). DOUBLE-EDGED categories (emotion, intensifiers) are weighted low and combined with the evidence dimensions, never used as a sole veto — high-arousal language can be legitimate (a real emergency is emotional).",
+  "_scoring": {
+    "load_formula": "load = sum over categories of min(cap, hits * weight)",
+    "density": "load_per_100 = load * 100 / max(words, 30)   (short text not extrapolated past a 30-word base)",
+    "manipulation_score": "1 - exp(-0.08 * load_per_100)   (0 clean .. ~1 saturated)",
+    "discount": "final_weight = evidence_weight * (1 - 0.6 * manipulation_score)   (heavy manipulation costs up to 60%)",
+    "_note": "Params are tunable and SHOULD be calibrated against the Da San Martino Propaganda Techniques Corpus (PTC) in Phase 2. v0 values are reasoned defaults."
+  },
+  "_key_findings": {
+    "Brady_2017_PNAS": "Each additional moral-emotional word increased message diffusion ~20% (n=563,312); contagion bounded within ideological groups (echo chambers).",
+    "TverskyKahneman_1981": "Logically-equivalent gain/loss framing reverses preferences by exploiting System-1 / loss aversion.",
+    "Entman_1993": "Framing = selection + salience to promote a particular interpretation.",
+    "DaSanMartino_2019": "18 propaganda techniques annotated at span level in news (Propaganda Techniques Corpus); loaded language and name-calling are the most frequent.",
+    "GanterStrube_2009": "Weasel words flagged via Wikipedia weasel tags + shallow features — vague attribution that implies authority without evidence.",
+    "Cialdini_1984": "Six persuasion levers (authority, social proof/bandwagon, scarcity, reciprocity, liking, commitment) used in marketing.",
+    "BlomHansen_2015": "Clickbait uses forward-reference, second-person 'you', superlatives, numerals, attention punctuation."
+  },
+  "categories": [
+    {
+      "id": "loaded_language",
+      "name": "Loaded / emotionally charged language",
+      "definition": "Words chosen for emotional charge rather than description, to influence the reader (Da San Martino's most frequent technique).",
+      "citation": "Da San Martino et al. 2019 (EMNLP-IJCNLP); MPQA Subjectivity Lexicon (Wilson et al. 2005)",
+      "weight": 1.0, "cap": 3.0, "double_edged": true,
+      "markers": ["slammed", "blasted", "shocking", "disgraceful", "outrageous", "devastating", "horrific", "catastrophic", "brutal", "destroyed", "eviscerated", "savage", "stunning", "explosive", "bombshell", "scandalous", "appalling", "chilling"]
+    },
+    {
+      "id": "appeal_to_fear",
+      "name": "Appeal to fear / threat",
+      "definition": "Builds support by stoking fear of an alternative or an existential threat.",
+      "citation": "Da San Martino et al. 2019 ('Appeal to fear/prejudice'); Witte EPPM 1992",
+      "weight": 1.0, "cap": 3.0, "double_edged": false,
+      "markers": ["dangerous", "threat", "crisis", "catastrophe", "terrifying", "doom", "collapse", "invasion", "under attack", "existential threat", "wake-up call", "before it's too late", "destroy our", "end of"]
+    },
+    {
+      "id": "us_vs_them_namecalling",
+      "name": "Us-vs-them / name-calling / labeling",
+      "definition": "Labels a person/group with a name the audience fears or loves, to bypass argument. SYMMETRIC list by design.",
+      "citation": "Da San Martino et al. 2019 ('Name calling/Labeling','Flag-waving'); Brady et al. 2017 (group-bounded contagion)",
+      "weight": 1.0, "cap": 3.0, "double_edged": false,
+      "markers": ["radical", "extremist", "regime", "elites", "so-called", "thugs", "traitor", "un-american", "mob", "woke", "fascist", "communist", "marxist", "rino", "libtard", "snowflake", "deplorables", "globalist", "the establishment", "puppet"]
+    },
+    {
+      "id": "weasel_attribution",
+      "name": "Weasel words / vague attribution",
+      "definition": "Vague, unnamed authority that implies support without evidence ('experts say', 'some believe').",
+      "citation": "Ganter & Strube 2009 ('Finding Hedges by Chasing Weasels')",
+      "weight": 1.0, "cap": 3.0, "double_edged": true,
+      "markers": ["some say", "experts believe", "experts say", "it is widely believed", "sources say", "many people", "critics argue", "people are saying", "studies show", "research suggests", "it is said", "many believe", "some argue", "is being called"]
+    },
+    {
+      "id": "hyperbole_exaggeration",
+      "name": "Exaggeration / minimization / superlatives",
+      "definition": "Representing something as far greater or smaller than it is; superlative-driven clickbait.",
+      "citation": "Da San Martino et al. 2019 ('Exaggeration/Minimisation'); Blom & Hansen 2015",
+      "weight": 0.6, "cap": 2.0, "double_edged": true,
+      "markers": ["unprecedented", "never before", "the worst", "the best ever", "massive", "enormous", "historic", "biggest ever", "tiny", "mere", "nothing more than", "the most", "record-breaking", "epic"]
+    },
+    {
+      "id": "absolutes_overgeneralization",
+      "name": "Absolutes / overgeneralization",
+      "definition": "All-or-nothing claims and false certainty that erase nuance (black-and-white framing).",
+      "citation": "Da San Martino et al. 2019 ('Causal oversimplification','Black-and-white fallacy')",
+      "weight": 0.6, "cap": 2.0, "double_edged": true,
+      "markers": ["always", "never", "everyone", "no one", "nobody", "everything", "nothing", "all of them", "none of them", "undeniable", "proves", "guarantees", "without question", "everybody knows", "the only", "completely"]
+    },
+    {
+      "id": "moral_emotional_outrage",
+      "name": "Moral-emotional / outrage language",
+      "definition": "Combined moral + emotional words that drive viral diffusion within in-groups (+20%/word).",
+      "citation": "Brady et al. 2017 (PNAS, 'Emotion shapes the diffusion of moralized content')",
+      "weight": 0.6, "cap": 2.0, "double_edged": true,
+      "markers": ["evil", "corrupt", "betray", "betrayal", "shameful", "disgrace", "sacred", "hero", "villain", "greed", "tyranny", "freedom", "patriot", "sinister", "depraved", "vile", "righteous"]
+    },
+    {
+      "id": "clickbait_sensational",
+      "name": "Clickbait / sensational hooks",
+      "definition": "Forward-reference and curiosity-gap hooks engineered for clicks over information.",
+      "citation": "Blom & Hansen 2015; Biyani et al. 2016; SENS-HEAD (sensational-headline dataset)",
+      "weight": 0.6, "cap": 2.0, "double_edged": false,
+      "markers": ["you won't believe", "what they don't want you to know", "the truth about", "this one trick", "mind-blowing", "jaw-dropping", "will shock you", "must-see", "here's why", "the real reason", "goes viral", "breaks the internet"]
+    },
+    {
+      "id": "thought_terminating_cliche",
+      "name": "Thought-terminating cliché",
+      "definition": "Stock phrases that shut down analysis rather than invite it.",
+      "citation": "Lifton 1961; Da San Martino et al. 2019 ('Thought-terminating cliché')",
+      "weight": 0.6, "cap": 2.0, "double_edged": false,
+      "markers": ["wake up", "do your own research", "it is what it is", "end of story", "plain and simple", "case closed", "enough said", "the truth is", "open your eyes", "connect the dots"]
+    },
+    {
+      "id": "bandwagon_social_proof",
+      "name": "Bandwagon / social proof",
+      "definition": "Urges acceptance because 'everyone' is doing/believing it.",
+      "citation": "Cialdini 1984 (Influence, social proof); Da San Martino et al. 2019 ('Bandwagon')",
+      "weight": 0.6, "cap": 2.0, "double_edged": false,
+      "markers": ["everyone is", "join the millions", "everybody is", "the people demand", "growing movement", "everyone agrees", "join us", "don't be left behind", "trending now"]
+    },
+    {
+      "id": "intensifiers",
+      "name": "Intensifiers / boosters",
+      "definition": "Degree words that amplify without adding evidence (mild signal).",
+      "citation": "Lakoff 1973 (Hedges); Hyland 2005 (boosters)",
+      "weight": 0.3, "cap": 1.0, "double_edged": true,
+      "markers": ["very", "extremely", "totally", "absolutely", "literally", "utterly", "incredibly", "insanely", "ridiculously"]
+    },
+    {
+      "id": "framing_loss_gain",
+      "name": "Loss/gain framing (partial)",
+      "definition": "Equivalency framing that exploits loss aversion. Hard to lexicalize fully; light markers only — full detection deferred to the NLP phase.",
+      "citation": "Tversky & Kahneman 1981; Entman 1993; Druckman 1997",
+      "weight": 0.3, "cap": 1.0, "double_edged": true,
+      "markers": ["at risk of losing", "could lose", "stand to lose", "don't miss out", "while you still can", "before you lose", "save vs lose"]
+    }
+  ]
+}

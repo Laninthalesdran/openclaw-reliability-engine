@@ -1,0 +1,29 @@
+{
+  "name": "@tntholley/openclaw-reliability-engine",
+  "version": "0.1.0",
+  "description": "Reliability scoring for OpenClaw agents — scores claims by evidence and persuasion technique, not by the politics of the source. Explainable, non-partisan, auditable.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "Travis Edward Holley (TNT Holley Inc.)",
+  "contributors": ["Claude Opus 4.7 (1M context, Anthropic)"],
+  "keywords": ["openclaw", "openclaw-plugin", "reliability", "fact-checking", "misinformation", "media-literacy", "propaganda-detection", "bias"],
+  "files": ["index.ts", "openclaw.plugin.json", "src/", "data/", "README.md", "SKILL.md", "NOTICE"],
+  "scripts": {
+    "test": "node test/demo.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"],
+    "compat": {
+      "pluginApi": ">=2026.5.20",
+      "minGatewayVersion": "2026.5.20"
+    },
+    "build": {
+      "openclawVersion": "2026.5.20",
+      "pluginSdkVersion": "2026.5.20"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

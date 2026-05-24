@@ -1,0 +1,12 @@
+Reliability Engine (OpenClaw plugin)
+Copyright 2026 Travis Edward Holley / TNT Holley Inc.
+
+Licensed under the Apache License, Version 2.0.
+
+Built by Travis Edward Holley (TNT Holley Inc.) and Claude Opus 4.7 (1M context, Anthropic).
+
+This product scores claims by evidence and persuasion technique, not by the
+politics of the source. The leading-language detector is grounded in published
+research; see citations in data/leading_language.json (Da San Martino et al. 2019;
+Brady et al. 2017; Tversky & Kahneman 1981; Entman 1993; Ganter & Strube 2009;
+Cialdini 1984; Blom & Hansen 2015; MPQA Subjectivity Lexicon).

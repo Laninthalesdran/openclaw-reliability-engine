@@ -1,0 +1,21 @@
+// Resolved claims = the track record that EARNS validity. Each: source, topic, resolution.
+// resolution: true | false | partly (partly counts 0.5). This is the ground truth the
+// calibration loop learns from — validity is derived from these, not assigned.
+{"source_id": "anon_forum", "topic": "economy", "resolution": "false"}
+{"source_id": "anon_forum", "topic": "economy", "resolution": "true"}
+{"source_id": "anon_forum", "topic": "politics", "resolution": "false"}
+{"source_id": "anon_forum", "topic": "politics", "resolution": "false"}
+{"source_id": "anon_forum", "topic": "health", "resolution": "false"}
+{"source_id": "anon_forum", "topic": "economy", "resolution": "true"}
+{"source_id": "anon_forum", "topic": "politics", "resolution": "false"}
+{"source_id": "anon_forum", "topic": "health", "resolution": "partly"}
+{"source_id": "indie_newsletter", "topic": "economy", "resolution": "true"}
+{"source_id": "indie_newsletter", "topic": "economy", "resolution": "true"}
+{"source_id": "indie_newsletter", "topic": "tech", "resolution": "true"}
+{"source_id": "indie_newsletter", "topic": "tech", "resolution": "true"}
+{"source_id": "indie_newsletter", "topic": "economy", "resolution": "false"}
+{"source_id": "indie_newsletter", "topic": "tech", "resolution": "true"}
+{"source_id": "wire_service", "topic": "economy", "resolution": "true"}
+{"source_id": "wire_service", "topic": "economy", "resolution": "true"}
+{"source_id": "wire_service", "topic": "politics", "resolution": "true"}
+{"source_id": "wire_service", "topic": "politics", "resolution": "partly"}

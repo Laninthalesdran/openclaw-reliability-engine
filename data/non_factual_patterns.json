@@ -1,0 +1,27 @@
+{
+  "patterns": [
+    "this is satire",
+    "satirical",
+    "satire site",
+    "works of satire",
+    "parody",
+    "parody account",
+    "parody of",
+    "this channel is a parody",
+    "for entertainment purposes only",
+    "entertainment purposes",
+    "not real news",
+    "fake news (satire)",
+    "fictional",
+    "works of fiction",
+    "humor",
+    "humour",
+    "comedy",
+    "spoof",
+    "lampoon",
+    "no claim to truth",
+    "not affiliated with",
+    "(not real)"
+  ],
+  "note": "Match case-insensitively against a source's about page, channel description, profile bio, or footer/disclaimer. A match sets self_declared_nonfactual=true (the genre floor then applies). Tune to avoid false positives on outlets that merely COVER comedy."
+}
