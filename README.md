@@ -1,3 +1,5 @@
+> **Two ways to use the Reliability Engine** — 🤖 **OpenClaw agent plugin** (this repo) · 🧩 **Browser extension** → [Reliability-Web-Extension](https://github.com/Laninthalesdran/Reliability-Web-Extension). Same engine, two front-ends.
+
 # Reliability Engine — an OpenClaw plugin
 
 **Scores how much a claim should move your beliefs — by evidence and persuasion technique, not by the politics of the source.** Explainable, non-partisan, auditable. No censor in the basement.

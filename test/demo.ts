@@ -126,6 +126,34 @@ check("RT flagged state-instrument", (rt as any).state_media?.control_type === "
 check("BBC flagged public-funded-independent (not lumped w/ RT)", (bbc as any).state_media?.control_type === "public-funded-independent" ? 1 : 0, 1);
 
 console.log("\n" + "=".repeat(64));
+console.log("(G) BIAS RATING — structural, symmetric, separate from validity");
+console.log("=".repeat(64));
+const vBefore = eng.sources["wire_service"].validity.score;
+const rb = eng.rateBias("wire_service", [
+  "SHOCKING betrayal: the corrupt regime's so-called experts destroyed everything — wake up",
+  "outrageous: the radical elites slammed patriots in a disgraceful, catastrophic attack",
+]);
+const vAfter = eng.sources["wire_service"].validity.score;
+console.log(`  wire_service bias magnitude (from heavy technique): ${rb.magnitude}`);
+check("loaded claims -> high bias magnitude (>0.5)", rb.magnitude > 0.5 ? 1 : 0, 1);
+check("rating bias does NOT touch validity (firewall)", Math.abs(vAfter - vBefore) < 1e-9 ? 1 : 0, 1);
+
+eng.rateBias("daily_newsdesk", ["the committee reported a 0.7% increase in output."]);
+check("neutral claim -> low bias magnitude (<0.2)", eng.sources["daily_newsdesk"].bias.magnitude < 0.2 ? 1 : 0, 1);
+
+// side-symmetry: same technique aimed at opposite-coded targets -> equal magnitude
+const rightT = eng.rateBias("anon_forum", ["the corrupt fascist betrayed everyone, wake up"]);
+const leftT = eng.rateBias("indie_newsletter", ["the corrupt woke betrayed everyone, wake up"]);
+console.log(`  right-coded target ${rightT.magnitude} vs left-coded target ${leftT.magnitude}`);
+check("bias is SIDE-SYMMETRIC (same technique, opposite targets -> equal magnitude)",
+      Math.abs(rightT.magnitude - leftT.magnitude) < 0.01 ? 1 : 0, 1);
+
+// coverage-engine selection signal feeds DIRECTION (measured, not assigned)
+const sb = eng.setSelectionBias("partisan_blog", "pro-PolY", 0.8);
+check("selection-bias sets direction from measured omission, not judgment",
+      (sb.direction === "pro-PolY" && sb.magnitude >= 0.8) ? 1 : 0, 1);
+
+console.log("\n" + "=".repeat(64));
 console.log(`RESULT: ${pass} passed, ${fail} failed`);
 console.log("=".repeat(64));
 process.exit(fail > 0 ? 1 : 0);

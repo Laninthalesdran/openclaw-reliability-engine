@@ -109,4 +109,34 @@ export class ReliabilityEngine {
     calibrate(resolved) {
         return calibrate(this.sources, resolved);
     }
+    /** Rate a source's bias MAGNITUDE from persuasion-technique density across its claims.
+     *  This is STRUCTURAL and SYMMETRIC — it counts technique (loaded language, fear appeals,
+     *  us-vs-them, etc.), identically regardless of which side the technique serves. It is NOT
+     *  a hand-assigned left/right lean. It NEVER touches validity (accuracy and bias are
+     *  separate axes — a source can be accurate AND slanted). */
+    rateBias(sourceId, claimTexts) {
+        const s = this.sources[sourceId];
+        if (!s || claimTexts.length === 0)
+            return null;
+        const scores = claimTexts.map((t) => rhetoric.analyze(t).score);
+        const mag = scores.reduce((a, b) => a + b, 0) / scores.length;
+        s.bias.magnitude = Math.round(mag * 1000) / 1000;
+        s.bias.method = "technique-density (leading-language); structural, symmetric; separate from validity";
+        return { source_id: sourceId, magnitude: s.bias.magnitude, n: claimTexts.length, method: s.bias.method };
+    }
+    /** Fold the Coverage Engine's selection-bias signal into a source's bias axis. DIRECTION
+     *  here is which side a source's SELECTION/OMISSION favors — derived from measured omission
+     *  asymmetry, not assigned by judgment. Raises magnitude if selection bias exceeds the
+     *  technique-based magnitude. NEVER touches validity. */
+    setSelectionBias(sourceId, direction, magnitude) {
+        let s = this.sources[sourceId];
+        if (!s) {
+            s = defaultSource(sourceId);
+            this.sources[sourceId] = s;
+        }
+        s.bias.direction = direction;
+        s.bias.magnitude = Math.round(Math.max(s.bias.magnitude, magnitude) * 1000) / 1000;
+        s.bias.method = (s.bias.method ? s.bias.method + "; " : "") + "selection-omission asymmetry (coverage engine)";
+        return { source_id: sourceId, direction: s.bias.direction, magnitude: s.bias.magnitude };
+    }
 }
