@@ -56,6 +56,7 @@ export interface ClaimInput {
   provenance?: string;              // primary | secondary | tertiary
   cites_evidence?: boolean;
   n_independent_corroborators?: number;
+  corroborating_sources?: string[];   // source IDs — deduped by controlling entity (state-media-aware)
   falsifiable?: number;             // 0..1
   incentive_conflict?: number;      // 0..1
   age_days?: number;

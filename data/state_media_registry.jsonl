@@ -1,0 +1,38 @@
+// STATE-MEDIA registry. Maps outlets to their CONTROLLING/FUNDING entity — a documented
+// funding/control FACT, applied SYMMETRICALLY across all governments, never a judgment about
+// which government is "good." Mechanical use: outlets sharing a controlling_entity collapse to
+// ONE corroborator (defeats coordinated-corroboration gaming). control_type sets flag strength:
+//   state-instrument          = direct state/party control
+//   state-funded              = government-funded, editorial independence contested
+//   state-funded-firewalled   = government-funded WITH statutory editorial firewall
+//   public-funded-independent = publicly funded, editorially independent by charter/statute
+// NOT exhaustive (see KNOWN_LIMITATIONS.md §4). incentive_floor = min incentive-conflict applied.
+{"source_id": "rt", "name": "RT (Russia Today)", "controlling_entity": "Russian state", "country": "Russia", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "sputnik", "name": "Sputnik", "controlling_entity": "Russian state", "country": "Russia", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "tass", "name": "TASS", "controlling_entity": "Russian state", "country": "Russia", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "ria_novosti", "name": "RIA Novosti", "controlling_entity": "Russian state", "country": "Russia", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "channel_one", "name": "Channel One Russia", "controlling_entity": "Russian state", "country": "Russia", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "xinhua", "name": "Xinhua", "controlling_entity": "Chinese state / CCP", "country": "China", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "cgtn", "name": "CGTN", "controlling_entity": "Chinese state / CCP", "country": "China", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "peoples_daily", "name": "People's Daily", "controlling_entity": "Chinese state / CCP", "country": "China", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "global_times", "name": "Global Times", "controlling_entity": "Chinese state / CCP", "country": "China", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "china_daily", "name": "China Daily", "controlling_entity": "Chinese state / CCP", "country": "China", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "press_tv", "name": "Press TV", "controlling_entity": "Iranian state", "country": "Iran", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "irna", "name": "IRNA", "controlling_entity": "Iranian state", "country": "Iran", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "fars", "name": "Fars News Agency", "controlling_entity": "Iranian state", "country": "Iran", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "tasnim", "name": "Tasnim News Agency", "controlling_entity": "Iranian state", "country": "Iran", "control_type": "state-instrument", "incentive_floor": 0.7}
+{"source_id": "kcna", "name": "KCNA", "controlling_entity": "North Korean state", "country": "North Korea", "control_type": "state-instrument", "incentive_floor": 0.8}
+{"source_id": "rodong_sinmun", "name": "Rodong Sinmun", "controlling_entity": "North Korean state", "country": "North Korea", "control_type": "state-instrument", "incentive_floor": 0.8}
+{"source_id": "trt", "name": "TRT World", "controlling_entity": "Turkish state", "country": "Turkey", "control_type": "state-instrument", "incentive_floor": 0.6}
+{"source_id": "anadolu", "name": "Anadolu Agency", "controlling_entity": "Turkish state", "country": "Turkey", "control_type": "state-instrument", "incentive_floor": 0.6}
+{"source_id": "telesur", "name": "teleSUR", "controlling_entity": "Venezuelan state (+ allies)", "country": "Venezuela", "control_type": "state-funded", "incentive_floor": 0.6}
+{"source_id": "al_jazeera", "name": "Al Jazeera", "controlling_entity": "Qatari government", "country": "Qatar", "control_type": "state-funded", "incentive_floor": 0.4}
+{"source_id": "al_arabiya", "name": "Al Arabiya", "controlling_entity": "Saudi state-linked ownership", "country": "Saudi Arabia/UAE", "control_type": "state-funded", "incentive_floor": 0.4}
+{"source_id": "voa", "name": "Voice of America", "controlling_entity": "US government (USAGM)", "country": "United States", "control_type": "state-funded-firewalled", "incentive_floor": 0.3}
+{"source_id": "rferl", "name": "Radio Free Europe / Radio Liberty", "controlling_entity": "US government (USAGM)", "country": "United States", "control_type": "state-funded-firewalled", "incentive_floor": 0.3}
+{"source_id": "rfa", "name": "Radio Free Asia", "controlling_entity": "US government (USAGM)", "country": "United States", "control_type": "state-funded-firewalled", "incentive_floor": 0.3}
+{"source_id": "bbc", "name": "BBC", "controlling_entity": "UK public charter", "country": "United Kingdom", "control_type": "public-funded-independent", "incentive_floor": 0.2}
+{"source_id": "deutsche_welle", "name": "Deutsche Welle", "controlling_entity": "German public broadcasting", "country": "Germany", "control_type": "public-funded-independent", "incentive_floor": 0.2}
+{"source_id": "france24", "name": "France 24", "controlling_entity": "French public broadcasting", "country": "France", "control_type": "public-funded-independent", "incentive_floor": 0.2}
+{"source_id": "rfi", "name": "Radio France Internationale", "controlling_entity": "French public broadcasting", "country": "France", "control_type": "public-funded-independent", "incentive_floor": 0.2}
+{"source_id": "nhk", "name": "NHK", "controlling_entity": "Japanese public broadcasting", "country": "Japan", "control_type": "public-funded-independent", "incentive_floor": 0.2}

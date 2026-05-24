@@ -11,6 +11,7 @@ import type { SourceRecord, ClaimInput, ResolvedClaim } from "./types.ts";
 import { gateEdges, effectivePrior } from "./trustGraph.ts";
 import type { Sources } from "./trustGraph.ts";
 import * as rhetoric from "./rhetoric.ts";
+import * as stateMedia from "./stateMedia.ts";
 import { scoreClaim, explain } from "./claimScorer.ts";
 import type { ScoreResult } from "./claimScorer.ts";
 import { applyToSources, matchesSelfDeclaration } from "./registry.ts";
@@ -72,6 +73,8 @@ export class ReliabilityEngine {
       this.registry[e.source_id] = e as RegistryEntry;
     }
     this.patterns = JSON.parse(readFileSync(join(dataDir, "non_factual_patterns.json"), "utf-8")).patterns;
+    // 4. state-media control graph (corroboration dedup + incentive floor + control flag)
+    stateMedia.load(readJsonl(join(dataDir, "state_media_registry.jsonl")));
     applyToSources(this.sources, this.registry);
     gateEdges(this.sources);
   }
@@ -91,6 +94,7 @@ export class ReliabilityEngine {
         found: false, source_id: sourceId,
         self_declared_nonfactual: patternHit.hit,
         self_declaration_match: patternHit.phrase,
+        state_media: stateMedia.info(sourceId),
         effective_prior: aboutText && patternHit.hit ? 0.05 : 0.3,
         note: "unknown source; cautious default prior",
       };
@@ -100,6 +104,7 @@ export class ReliabilityEngine {
       validity: s.validity, bias: s.bias, salience: s.salience,
       genre: s.genre, self_declared_nonfactual: s.self_declared_nonfactual || patternHit.hit,
       self_declaration: s.self_declaration, self_declaration_match: patternHit.phrase,
+      state_media: stateMedia.info(sourceId),
       effective_prior: Math.round(effectivePrior(this.sources, sourceId) * 1000) / 1000,
     };
   }

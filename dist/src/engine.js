@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { defaultSource } from "./types.js";
 import { gateEdges, effectivePrior } from "./trustGraph.js";
 import * as rhetoric from "./rhetoric.js";
+import * as stateMedia from "./stateMedia.js";
 import { scoreClaim, explain } from "./claimScorer.js";
 import { applyToSources, matchesSelfDeclaration } from "./registry.js";
 import { calibrate } from "./calibrate.js";
@@ -63,6 +64,8 @@ export class ReliabilityEngine {
             this.registry[e.source_id] = e;
         }
         this.patterns = JSON.parse(readFileSync(join(dataDir, "non_factual_patterns.json"), "utf-8")).patterns;
+        // 4. state-media control graph (corroboration dedup + incentive floor + control flag)
+        stateMedia.load(readJsonl(join(dataDir, "state_media_registry.jsonl")));
         applyToSources(this.sources, this.registry);
         gateEdges(this.sources);
     }
@@ -80,6 +83,7 @@ export class ReliabilityEngine {
                 found: false, source_id: sourceId,
                 self_declared_nonfactual: patternHit.hit,
                 self_declaration_match: patternHit.phrase,
+                state_media: stateMedia.info(sourceId),
                 effective_prior: aboutText && patternHit.hit ? 0.05 : 0.3,
                 note: "unknown source; cautious default prior",
             };
@@ -89,6 +93,7 @@ export class ReliabilityEngine {
             validity: s.validity, bias: s.bias, salience: s.salience,
             genre: s.genre, self_declared_nonfactual: s.self_declared_nonfactual || patternHit.hit,
             self_declaration: s.self_declaration, self_declaration_match: patternHit.phrase,
+            state_media: stateMedia.info(sourceId),
             effective_prior: Math.round(effectivePrior(this.sources, sourceId) * 1000) / 1000,
         };
     }

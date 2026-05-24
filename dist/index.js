@@ -28,7 +28,8 @@ export default definePluginEntry({
                 source_id: Type.Optional(Type.String({ description: "Known source id (e.g. 'the_onion', 'wire_service')." })),
                 provenance: Type.Optional(Type.String({ description: "primary | secondary | tertiary" })),
                 cites_evidence: Type.Optional(Type.Boolean({ description: "Does the claim cite checkable evidence?" })),
-                n_independent_corroborators: Type.Optional(Type.Number({ description: "Count of INDEPENDENT corroborating sources." })),
+                n_independent_corroborators: Type.Optional(Type.Number({ description: "Count of INDEPENDENT corroborating sources (fallback if IDs unknown)." })),
+                corroborating_sources: Type.Optional(Type.Array(Type.String(), { description: "Corroborating source IDs. Preferred over the count: they are deduped by controlling entity, so state-controlled clones (e.g. RT+Sputnik+TASS) collapse to one and can't fake independent confirmation." })),
                 falsifiable: Type.Optional(Type.Number({ description: "0 (cannot be wrong) .. 1 (sharply testable)." })),
                 genre: Type.Optional(Type.String({ description: "factual | satire | parody | comedy | fiction | marketing | opinion" })),
                 incentive_conflict: Type.Optional(Type.Number({ description: "0 (no stake) .. 1 (strong stake in belief)." })),
@@ -45,8 +46,9 @@ export default definePluginEntry({
             name: "reliability_check_source",
             description: "Look up a source's reliability profile: validity (accuracy earned from outcomes), bias " +
                 "(direction + magnitude, kept separate from validity), salience (reach), whether it " +
-                "self-declares as non-factual (satire/parody), and its effective trust prior. Optionally " +
-                "pass about_text to scan an unknown source's bio/disclaimer for self-declared-satire phrases.",
+                "self-declares as non-factual (satire/parody), whether it is state-funded/controlled (with " +
+                "the controlling entity and an honest control-type framing), and its effective trust prior. " +
+                "Optionally pass about_text to scan an unknown source's bio/disclaimer for self-declared-satire phrases.",
             parameters: Type.Object({
                 source_id: Type.String({ description: "Source id to inspect." }),
                 about_text: Type.Optional(Type.String({ description: "Optional about/bio/disclaimer text to scan." })),

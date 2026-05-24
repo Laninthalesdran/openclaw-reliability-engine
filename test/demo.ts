@@ -97,6 +97,35 @@ check("anon_forum validity (earned)", m["anon_forum"], 0.305, 0.02);
 check("indie_newsletter validity (earned from scratch)", m["indie_newsletter"], 0.75, 0.02);
 
 console.log("\n" + "=".repeat(64));
+console.log("(F) STATE MEDIA — control graph (Achilles-heel hardening)");
+console.log("=".repeat(64));
+// RT "corroborated" by Sputnik + TASS — all Russian state → collapse to ZERO independent
+const rtCoord = eng.scoreClaim({
+  text: "Officials announced the operation was a complete success.",
+  source_id: "rt", provenance: "primary", cites_evidence: true,
+  corroborating_sources: ["sputnik", "tass"], falsifiable: 0.8,
+});
+console.log(rtCoord.explanation);
+check("RT + state clones: corroboration collapses to ~0", rtCoord.breakdown.dims.corroboration, 0.0, 0.01);
+
+// same claim, genuinely independent corroborators → corroboration counts
+const rtIndep = eng.scoreClaim({
+  text: "Officials announced the operation was a complete success.",
+  source_id: "rt", provenance: "primary", cites_evidence: true,
+  corroborating_sources: ["wire_service", "daily_newsdesk"], falsifiable: 0.8,
+});
+check("RT + independent sources: corroboration counts (2 groups)", rtIndep.breakdown.dims.corroboration, 0.70, 0.05);
+console.log(`  coordinated ${rtCoord.epistemic_weight} vs independent ${rtIndep.epistemic_weight} — dedup + incentive penalty bite`);
+
+// control-type gradient: RT (instrument) is NOT lumped with BBC (public-funded-independent)
+const rt = eng.checkSource("rt");
+const bbc = eng.checkSource("bbc");
+console.log(`  rt  -> ${(rt as any).state_media?.control_type}`);
+console.log(`  bbc -> ${(bbc as any).state_media?.control_type}`);
+check("RT flagged state-instrument", (rt as any).state_media?.control_type === "state-instrument" ? 1 : 0, 1);
+check("BBC flagged public-funded-independent (not lumped w/ RT)", (bbc as any).state_media?.control_type === "public-funded-independent" ? 1 : 0, 1);
+
+console.log("\n" + "=".repeat(64));
 console.log(`RESULT: ${pass} passed, ${fail} failed`);
 console.log("=".repeat(64));
 process.exit(fail > 0 ? 1 : 0);

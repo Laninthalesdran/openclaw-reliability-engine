@@ -6,6 +6,7 @@ import type { ClaimInput, SourceRecord } from "./types.ts";
 import type { Sources } from "./trustGraph.ts";
 import { effectivePrior } from "./trustGraph.ts";
 import * as rhetoric from "./rhetoric.ts";
+import * as stateMedia from "./stateMedia.ts";
 
 const PROVENANCE: Record<string, number> = { primary: 1.0, secondary: 0.6, tertiary: 0.3 };
 
@@ -24,6 +25,27 @@ function corroboration(n: number): number {
   return 1 - Math.exp(-0.6 * Math.max(0, n));
 }
 
+// A source's "independence key" = its controlling state (if state media), else its owner,
+// else itself. Used to dedupe corroborators so state-controlled clones don't fake independence.
+function controllerKey(sourceId: string, sources: Sources): string {
+  return stateMedia.controllerOf(sourceId) || sources[sourceId]?.owner || sourceId;
+}
+
+// Effective independent corroborator count: if corroborator IDs are supplied, count DISTINCT
+// controlling entities that differ from the source's own. Else fall back to the raw count.
+function effectiveCorroborators(claim: ClaimInput, sources: Sources): number {
+  if (claim.corroborating_sources && claim.corroborating_sources.length) {
+    const selfKey = claim.source_id ? controllerKey(claim.source_id, sources) : "__self__";
+    const groups = new Set<string>();
+    for (const cs of claim.corroborating_sources) {
+      const k = controllerKey(cs, sources);
+      if (k !== selfKey) groups.add(k);
+    }
+    return groups.size;
+  }
+  return claim.n_independent_corroborators ?? 0;
+}
+
 export interface ScoreResult {
   epistemic_weight: number;
   breakdown: {
@@ -33,6 +55,8 @@ export interface ScoreResult {
     manipulation: rhetoric.RhetoricResult;
     raw: number;
     vetoes: string[];
+    flags: string[];
+    state_media: stateMedia.StateMediaEntry | null;
   };
 }
 
@@ -40,20 +64,25 @@ export function scoreClaim(claim: ClaimInput, sources: Sources): ScoreResult {
   const s: SourceRecord | undefined = claim.source_id ? sources[claim.source_id] : undefined;
 
   let transparency = 0.5;
-  const incentive = 1 - (claim.incentive_conflict ?? 0);
   if (s) {
     transparency = 0.5 + 0.25 * (s.funding ? 1 : 0) + 0.25 * (s.owner ? 1 : 0);
     transparency = Math.max(0, transparency - 0.5 * s.prior_variance);
   }
 
+  // state-media control: a state organ has a structural stake → raise the incentive-conflict
+  // floor; and corroboration dedupes by controlling entity (KNOWN_LIMITATIONS.md §1).
+  const sm = claim.source_id ? stateMedia.info(claim.source_id) : null;
+  let incentiveConflict = claim.incentive_conflict ?? 0;
+  if (sm) incentiveConflict = Math.max(incentiveConflict, sm.incentive_floor);
+
   const halflife = claim.domain_halflife_days ?? 3650;
   const dims: Record<string, number> = {
     provenance: PROVENANCE[claim.provenance ?? "secondary"] ?? 0.4,
     verifiability: claim.cites_evidence ? 1.0 : 0.2,
-    corroboration: corroboration(claim.n_independent_corroborators ?? 0),
+    corroboration: corroboration(effectiveCorroborators(claim, sources)),
     falsifiability: claim.falsifiable ?? 0.5,
     transparency: Math.min(1.0, transparency),
-    incentive,
+    incentive: 1 - incentiveConflict,
     recency: Math.exp(-(claim.age_days ?? 0) / Math.max(halflife, 1)),
     source_prior: claim.source_id ? effectivePrior(sources, claim.source_id) : 0.3,
   };
@@ -84,6 +113,10 @@ export function scoreClaim(claim: ClaimInput, sources: Sources): ScoreResult {
   const preManip = raw;
   raw *= rhetoric.discountFactor(manip.score);
 
+  // advisory flags (not vetoes — these caveat, they don't floor)
+  const flags: string[] = [];
+  if (sm) flags.push(stateMedia.flagText(sm));
+
   const round3 = (x: number) => Math.round(x * 1000) / 1000;
   const dimsR: Record<string, number> = {};
   for (const k of Object.keys(dims)) dimsR[k] = round3(dims[k]);
@@ -92,7 +125,7 @@ export function scoreClaim(claim: ClaimInput, sources: Sources): ScoreResult {
     epistemic_weight: Math.round(raw * 10 * 100) / 100,
     breakdown: {
       dims: dimsR, weights: W, raw_evidence: round3(preManip),
-      manipulation: manip, raw: round3(raw), vetoes,
+      manipulation: manip, raw: round3(raw), vetoes, flags, state_media: sm,
     },
   };
 }
@@ -104,6 +137,7 @@ export function explain(text: string, r: ScoreResult): string {
     `  EPISTEMIC WEIGHT: ${r.epistemic_weight}/10`,
   ];
   if (b.vetoes.length) lines.push(`  !! VETO: ${b.vetoes.join(", ")} (reputation cannot rescue this)`);
+  if (b.flags.length) lines.push(`  ~ flag: ${b.flags.join("; ")}`);
   const m = b.manipulation;
   if (m.score > 0.05) {
     const techs = m.top.map((t) => `${t.id}(${t.hits})`).join(", ");

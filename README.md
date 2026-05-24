@@ -46,6 +46,8 @@ A conspiracy claim that can't be falsified                               -> 2.0 
 
 **Anti-laundering trust:** a low-validity source **cannot** vouch another up — endorsements are gated by the endorser's own validity squared, cliques collapse, and validity is **earned from resolved-claim outcomes**, not assigned. (InfoWars vouching for a source moves ≈0.0025.)
 
+**State-media control graph:** outlets sharing a controlling/funding entity (e.g. RT + Sputnik + TASS = Russian state) **collapse to one corroborator** so coordinated state outlets can't fake independent confirmation; state control raises the incentive-conflict floor and attaches an honest, **control-type-scaled** flag (a direct state instrument is framed differently from a publicly-funded independent broadcaster like the BBC). Applied symmetrically across all governments — it's a documented funding/control fact, not a political judgment. See `data/state_media_registry.jsonl`.
+
 ## Install
 
 ```bash
@@ -69,6 +71,10 @@ data/                     the knowledge: leading-language lexicon (cited), self-
                           non-factual registry (71 outlets) + patterns, seed source memory
 test/demo.ts              verification harness
 ```
+
+## Known limitations — read them
+
+This is a confidence-weighting aid, not a truth oracle and not a censor. Its hardest adversary is **state media** (accurate enough to keep its validity high while distorting through framing, coordinated corroboration, and omission), and **omission/agenda-setting** is structurally beyond a per-claim scorer. The control graph above mitigates the corroboration-gaming and flags state control, but the residual is real. The full, honest list is in **[`KNOWN_LIMITATIONS.md`](./KNOWN_LIMITATIONS.md)** — read it before trusting a score. An engine that hides its blind spots is worse than one that names them.
 
 ## License & ethos
 

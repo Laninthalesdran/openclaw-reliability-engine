@@ -1,6 +1,6 @@
 {
   "name": "@laninthalesdran/openclaw-reliability-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Reliability scoring for OpenClaw agents — scores claims by evidence and persuasion technique, not by the politics of the source. Explainable, non-partisan, auditable.",
   "type": "module",
   "license": "Apache-2.0",
@@ -27,7 +27,8 @@
     "README.md",
     "SKILL.md",
     "NOTICE",
-    "LICENSE"
+    "LICENSE",
+    "KNOWN_LIMITATIONS.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
