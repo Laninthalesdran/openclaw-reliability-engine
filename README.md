@@ -56,7 +56,7 @@ A conspiracy claim that can't be falsified                               -> 2.0 
 ## Install
 
 ```bash
-openclaw plugins install clawhub:tntholley/reliability-engine
+openclaw plugins install clawhub:@laninthalesdran/openclaw-reliability-engine
 ```
 
 ## Verify it locally (no build needed; Node 24+ runs TypeScript directly)
